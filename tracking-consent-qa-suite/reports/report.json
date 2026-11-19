@@ -1,0 +1,89 @@
+{
+  "site": "Demo site (bundled)",
+  "run_at": "2026-11-19 13:38",
+  "summary": {
+    "pass": 7,
+    "fail": 3,
+    "warn": 1
+  },
+  "results": [
+    {
+      "check": "Consent banner appears on first visit",
+      "status": "pass",
+      "detail": "Banner rendered before any choice was made.",
+      "evidence": []
+    },
+    {
+      "check": "No analytics before a choice is made",
+      "status": "pass",
+      "detail": "0 Google tag requests before the visitor chose.",
+      "evidence": []
+    },
+    {
+      "check": "Decline blocks GA4",
+      "status": "pass",
+      "detail": "0 Google tag requests after decline across 3 pages.",
+      "evidence": []
+    },
+    {
+      "check": "Decline blocks ad pixels",
+      "status": "fail",
+      "detail": "1 ad request(s) fired even though the visitor declined.",
+      "evidence": [
+        "https://ad.doubleclick.net/activity;src=1234;type=visit;cat=home;ord=1795095480511"
+      ]
+    },
+    {
+      "check": "No analytics cookies after decline",
+      "status": "pass",
+      "detail": "No _ga cookies set.",
+      "evidence": []
+    },
+    {
+      "check": "Consent choice persists across pages",
+      "status": "pass",
+      "detail": "Banner did not reappear.",
+      "evidence": []
+    },
+    {
+      "check": "Accept loads GA4 and sends page_view",
+      "status": "pass",
+      "detail": "1 GA4 hits after accept; events: page_view.",
+      "evidence": [
+        "https://www.google-analytics.com/g/collect?v=2&tid=G-DEMO123&en=page_view&dl=http%3A%2F%2F127.0.0.1%3A38617%2Findex.html"
+      ]
+    },
+    {
+      "check": "Quiz submit pushes a complete dataLayer event",
+      "status": "pass",
+      "detail": "quiz_submit with quiz_path=backpacking, quiz_destination=results_backpacking.",
+      "evidence": [
+        "{\"event\": \"quiz_submit\", \"quiz_path\": \"backpacking\", \"quiz_destination\": \"results_backpacking\"}"
+      ]
+    },
+    {
+      "check": "UTM parameters survive the form redirect",
+      "status": "fail",
+      "detail": "Landing URL had utm_source and utm_campaign; confirmation URL kept 0 of 2.",
+      "evidence": [
+        "/thanks.html?path=backpacking"
+      ]
+    },
+    {
+      "check": "Internal links resolve",
+      "status": "fail",
+      "detail": "5 unique internal links checked, 1 broken.",
+      "evidence": [
+        "404  /sizing.html  (linked from /index.html)"
+      ]
+    },
+    {
+      "check": "CTAs are real links or tracked buttons",
+      "status": "warn",
+      "detail": "1 CTA(s) work only through JavaScript click handlers. Crawlers and link checkers can't see them, so confirm each one fires a tracked event.",
+      "evidence": [
+        "/index.html: 'Chat with us'"
+      ]
+    }
+  ]
+}

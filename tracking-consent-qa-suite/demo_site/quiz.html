@@ -1,0 +1,13 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Gear finder | Summit Trail Co.</title>
+<link rel="stylesheet" href="style.css"><script src="consent.js"></script></head>
+<body><h1>Gear finder</h1>
+<form id="quiz"><label for="trip">Trip type</label><select id="trip" name="trip"><option value="day_hike">Day hike</option><option value="backpacking">Backpacking</option></select>
+<label for="email">Email</label><input id="email" name="email" type="email" value="test@example.com">
+<p><button type="submit" id="submit">See my picks</button></p></form>
+<script>
+document.getElementById('quiz').addEventListener('submit',e=>{e.preventDefault();
+  const trip=document.getElementById('trip').value;
+  window.dataLayer.push({event:'quiz_submit',quiz_path:trip,quiz_destination:'results_'+trip});
+  //planted defect: utm parameters are dropped on the redirect
+  setTimeout(()=>location.href='thanks.html?path='+trip,50);});
+</script></body></html>

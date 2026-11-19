@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Marketing ROI Scenario Planner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* layout: inputs rail on the left, answers on the right; summary first, detail below */
+  --bg:#f4f5f2; --panel:#ffffff; --ink:#15181d; --ink-2:#565c66; --line:#dfe2dc;
+  --accent:#2457c5; --accent-soft:#e6ecfa; --good:#1d7a4c; --good-soft:#e2f3ea; --bad:#b3372e; --bad-soft:#fbe7e4;
+  --display:"IBM Plex Sans",system-ui,sans-serif; --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#121417; --panel:#1b1e23; --ink:#eef0f2; --ink-2:#a3a9b3; --line:#2d3239;
+  --accent:#6f9bff; --accent-soft:#1f2a44; --good:#4fc28a; --good-soft:#173326; --bad:#f0857a; --bad-soft:#3a1f1c; color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --bg:#121417; --panel:#1b1e23; --ink:#eef0f2; --ink-2:#a3a9b3; --line:#2d3239;
+  --accent:#6f9bff; --accent-soft:#1f2a44; --good:#4fc28a; --good-soft:#173326; --bad:#f0857a; --bad-soft:#3a1f1c; color-scheme:dark;}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--display);font-size:15px;line-height:1.5}
+.wrap{max-width:1180px;margin:0 auto;padding:28px 20px 48px;display:grid;gap:20px}
+header h1{font-size:26px;margin:0 0 4px;text-wrap:balance;letter-spacing:-.01em}
+header p{margin:0;color:var(--ink-2);max-width:68ch}
+.grid{display:grid;grid-template-columns:300px 1fr;gap:20px;align-items:start}
+@media (max-width:860px){.grid{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px}
+.panel h2{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-2);margin:0 0 14px;font-weight:600}
+.field{display:grid;gap:6px;margin-bottom:16px}
+.field label{font-weight:500;font-size:14px}
+.field .row{display:flex;gap:10px;align-items:center}
+.field input[type=number]{width:120px;font-family:var(--mono);font-size:15px;padding:7px 9px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink)}
+.field input[type=range]{flex:1;accent-color:var(--accent)}
+.field small{color:var(--ink-2);font-size:12px}
+input:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media (max-width:640px){.tiles{grid-template-columns:repeat(2,1fr)}}
+.tile{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px}
+.tile .k{font-size:12px;color:var(--ink-2)}
+.tile .v{font-family:var(--mono);font-size:24px;font-weight:600;font-variant-numeric:tabular-nums;margin-top:2px}
+.tile .s{font-size:12px;color:var(--ink-2)}
+.answers{display:grid;gap:20px}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+th{font-size:12px;color:var(--ink-2);font-weight:600;text-align:right;padding:8px 10px;border-bottom:1px solid var(--line)}
+th:first-child,td:first-child{text-align:left}
+td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:right;font-family:var(--mono);font-size:14px}
+.pill{display:inline-block;font-family:var(--display);font-size:12px;font-weight:600;padding:2px 9px;border-radius:99px}
+.pill.ok{background:var(--good-soft);color:var(--good)} .pill.no{background:var(--bad-soft);color:var(--bad)}
+.tbl{overflow-x:auto}
+.targets{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.targets input{width:64px;font-family:var(--mono);padding:5px 7px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink)}
+.targets span{font-size:13px;color:var(--ink-2)}
+svg text{font-family:var(--display);fill:var(--ink-2);font-size:12px}
+.heat td{font-size:13px;padding:7px 8px}
+.heat td.ok{background:var(--good-soft);color:var(--good)} .heat td.no{background:var(--bad-soft);color:var(--bad)}
+.heat td.cur{outline:2px solid var(--accent);outline-offset:-2px}
+.note{font-size:12px;color:var(--ink-2);margin:10px 0 0}
+.legend{display:flex;gap:16px;font-size:12px;color:var(--ink-2);margin-top:6px}
+.sw{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>Marketing ROI Scenario Planner</h1>
+  <p>Set a budget, what a customer is worth, and how well leads convert. The planner shows the ROI you're on track for, and how many leads and how low a cost per lead each ROI target would take. Example values shown.</p>
+</header>
+<div class="grid">
+  <section class="panel" aria-label="Inputs">
+    <h2>Inputs</h2>
+    <div class="field"><label for="budget">Annual marketing budget ($)</label>
+      <div class="row"><input type="range" id="budget-r" min="100000" max="10000000" step="50000"><input type="number" id="budget" min="0" step="10000"></div></div>
+    <div class="field"><label for="value">Revenue per new customer ($)</label>
+      <div class="row"><input type="range" id="value-r" min="100" max="20000" step="50"><input type="number" id="value" min="1" step="50"></div></div>
+    <div class="field"><label for="conv">Lead-to-customer rate (%)</label>
+      <div class="row"><input type="range" id="conv-r" min="0.5" max="25" step="0.1"><input type="number" id="conv" min="0.1" max="100" step="0.1"></div>
+      <small>Share of leads that become paying customers.</small></div>
+    <div class="field"><label for="cpl">Current cost per lead ($)</label>
+      <div class="row"><input type="range" id="cpl-r" min="5" max="500" step="1"><input type="number" id="cpl" min="0.01" step="1"></div></div>
+    <p class="note">ROI = revenue ÷ marketing spend. Customers and leads round up, since you can't close part of a customer.</p>
+  </section>
+  <div class="answers">
+    <div class="tiles" id="tiles"></div>
+    <section class="panel">
+      <h2>What each ROI target takes</h2>
+      <div class="targets" id="targets"><span>ROI targets:</span></div>
+      <div class="tbl"><table id="scen"><thead><tr><th>Target</th><th>Revenue needed</th><th>Customers</th><th>Leads</th><th>Max CPL</th><th>CPL gap</th><th>Status</th></tr></thead><tbody></tbody></table></div>
+    </section>
+    <section class="panel">
+      <h2>Max cost per lead by target vs. today</h2>
+      <svg id="chart" viewBox="0 0 720 260" width="100%" role="img" aria-label="Bar chart of maximum cost per lead for each ROI target, with a line at the current cost per lead"></svg>
+    </section>
+    <section class="panel">
+      <h2>Sensitivity: max CPL by conversion rate and ROI target</h2>
+      <div class="tbl"><table class="heat" id="heat"></table></div>
+      <div class="legend"><span><i class="sw" style="background:var(--good-soft);border:1px solid var(--good)"></i>Reachable at today's CPL</span><span><i class="sw" style="background:var(--bad-soft);border:1px solid var(--bad)"></i>Needs cheaper leads or better conversion</span><span><i class="sw" style="outline:2px solid var(--accent)"></i>Your current rate</span></div>
+    </section>
+  </div>
+</div>
+</div>
+<script>
+const S={budget:1500000,value:4000,conv:5,cpl:90,targets:[2,3,5,7]};
+const $=id=>document.getElementById(id);
+const usd=(n,d=0)=>isFinite(n)?'$'+n.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d}):'–';
+const num=n=>isFinite(n)?Math.round(n).toLocaleString('en-US'):'–';
+//same two-step rounding as the excel version
+function need(t,s){const rev=t*s.budget;const cust=Math.ceil(rev/s.value-1e-9);const leads=Math.ceil(cust/(s.conv/100)-1e-9);return{rev,cust,leads,maxCpl:s.budget/leads}}
+function current(s){const leads=Math.floor(s.budget/s.cpl);const cust=Math.floor(leads*s.conv/100);return{leads,cust,rev:cust*s.value,roi:cust*s.value/s.budget,cpc:s.budget/cust}}
+function bind(k){const n=$(k),r=$(k+'-r');n.value=S[k];r.value=S[k];
+  const set=v=>{v=parseFloat(v);if(!(v>0))return;S[k]=v;n.value=v;r.value=v;render()};
+  n.addEventListener('input',e=>set(e.target.value));r.addEventListener('input',e=>set(e.target.value))}
+['budget','value','conv','cpl'].forEach(bind);
+const tw=$('targets');S.targets.forEach((t,i)=>{const inp=document.createElement('input');inp.type='number';inp.min='0.5';inp.step='0.5';inp.value=t;inp.id='t'+i;inp.setAttribute('aria-label','ROI target '+(i+1));
+  inp.addEventListener('input',e=>{const v=parseFloat(e.target.value);if(v>0){S.targets[i]=v;render()}});tw.appendChild(inp)});
+function render(){
+  const c=current(S);const best=S.targets.filter(t=>need(t,S).maxCpl>=S.cpl);
+  $('tiles').innerHTML=[
+    ['Projected ROI',c.roi.toFixed(2)+'x','at today\'s CPL'],
+    ['Projected customers',num(c.cust),num(c.leads)+' leads'],
+    ['Projected revenue',usd(c.rev),'from new customers'],
+    ['Cost per customer',usd(c.cpc),best.length?'Highest reachable target: '+Math.max(...best)+'x':'No target reachable yet']
+  ].map(([k,v,s])=>`<div class="tile"><div class="k">${k}</div><div class="v">${v}</div><div class="s">${s}</div></div>`).join('');
+  const rows=S.targets.map(t=>({t,...need(t,S)}));
+  $('scen').tBodies[0].innerHTML=rows.map(r=>{const gap=r.maxCpl-S.cpl,ok=gap>=0;
+    return `<tr><td>${r.t}x</td><td>${usd(r.rev)}</td><td>${num(r.cust)}</td><td>${num(r.leads)}</td><td>${usd(r.maxCpl,2)}</td><td>${(gap<0?'−':'+')+usd(Math.abs(gap),2)}</td><td><span class="pill ${ok?'ok':'no'}">${ok?'On track':'CPL too high'}</span></td></tr>`}).join('');
+  //chart
+  const W=720,H=260,L=60,R=20,T=16,B=34,ph=H-T-B,pw=W-L-R;
+  const mx=Math.max(S.cpl,...rows.map(r=>r.maxCpl))*1.15;const step=niceStep(mx/4);const top=Math.ceil(mx/step)*step;
+  const y=v=>T+ph-(v/top)*ph;const bw=Math.min(90,pw/rows.length*0.5);
+  let g='';for(let v=0;v<=top+1e-9;v+=step){g+=`<line x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)"/><text x="${L-8}" y="${y(v)+4}" text-anchor="end">${usd(v)}</text>`}
+  rows.forEach((r,i)=>{const cx=L+pw*(i+0.5)/rows.length;const ok=r.maxCpl>=S.cpl;
+    g+=`<rect x="${cx-bw/2}" y="${y(r.maxCpl)}" width="${bw}" height="${Math.max(0,T+ph-y(r.maxCpl))}" rx="4" fill="${ok?'var(--accent)':'var(--accent-soft)'}" stroke="var(--accent)" stroke-width="${ok?0:1.5}"><title>${r.t}x target: max CPL ${usd(r.maxCpl,2)}</title></rect>`;
+    g+=`<text x="${cx}" y="${y(r.maxCpl)-7}" text-anchor="middle" style="fill:var(--ink);font-family:var(--mono)">${usd(r.maxCpl,2)}</text><text x="${cx}" y="${H-12}" text-anchor="middle">${r.t}x ROI</text>`});
+  g+=`<line x1="${L}" x2="${W-R}" y1="${y(S.cpl)}" y2="${y(S.cpl)}" stroke="var(--bad)" stroke-width="2" stroke-dasharray="6 4"/><text x="${W-R}" y="${y(S.cpl)-6}" text-anchor="end" style="fill:var(--bad);font-weight:600">Today's CPL ${usd(S.cpl,2)}</text>`;
+  $('chart').innerHTML=g;
+  //heatmap
+  const rates=[...new Set([2,3,4,5,6,8,10,S.conv])].sort((a,b)=>a-b);
+  let h='<thead><tr><th>Conv. rate</th>'+S.targets.map(t=>`<th>${t}x</th>`).join('')+'</tr></thead><tbody>';
+  rates.forEach(rt=>{h+=`<tr><td>${rt}%</td>`+S.targets.map(t=>{const m=need(t,{...S,conv:rt}).maxCpl;return `<td class="${m>=S.cpl?'ok':'no'} ${rt===S.conv?'cur':''}">${usd(m,2)}</td>`}).join('')+'</tr>'});
+  $('heat').innerHTML=h+'</tbody>';
+}
+function niceStep(x){const p=Math.pow(10,Math.floor(Math.log10(x)));const f=x/p;return (f<=1?1:f<=2?2:f<=5?5:10)*p}
+render();
+</script>
+</body>
+</html>

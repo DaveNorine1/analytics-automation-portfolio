@@ -1,0 +1,7 @@
+indicator,description,best_lag,min_p_value,significant_5pct
+RSAFS,Retail Sales,3,0.2234508667235084,False
+PCE,Personal Consumption Expenditures,1,0.2351116479680607,False
+CC4WSA,Consumer Credit,2,0.00031002415000514237,True
+HOUST,Housing Starts,5,0.0018854945675009414,True
+DGORDER,Durable Goods Orders,1,0.1889288421598233,False
+PSAVERT,Personal Savings Rate,2,0.3776650646098232,False
